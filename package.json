@@ -1,0 +1,27 @@
+{
+  "name": "node_short_url",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Amaanchaudhary/Node_Short_URL.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Amaanchaudhary/Node_Short_URL/issues"
+  },
+  "homepage": "https://github.com/Amaanchaudhary/Node_Short_URL#readme",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.9.0",
+    "express": "^5.1.0",
+    "mongoose": "^8.14.3",
+    "nanoid": "^5.1.5",
+    "nodemon": "^3.1.10"
+  },
+  "type": "module"
+}
