@@ -3,6 +3,7 @@ import express from "express";
 import urlRouter from "./routes/url.js";
 import { connectMongoDb } from "./connection.js";
 import testRouter from "./routes/test.js";
+import userRouter from "./routes/user.js";
 import path from "path";
 import staticRoute from "./routes/staticRouter.js";
 
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: false }));
 //5. Routes
 app.use("/url", urlRouter);
 app.use("/test", testRouter);
+app.use("/user", userRouter);
 app.use("/", staticRoute);
 
 //6. Add Port Listener
