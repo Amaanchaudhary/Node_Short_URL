@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL Shortener</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 95vh;
+        width: 100%;
+      }
+
+      h1 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+        font-size: 34px;
+        text-shadow: 1px 1px 2px #ccc;
+      }
+
+      .url {
+        font-size: 20px;
+        color: #34495e;
+        font-weight: 600;
+        margin-bottom: 25px;
+        text-align: center;
+        background: #ecf0f1;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .url a {
+        color: #3498db;
+        word-break: break-word;
+        text-decoration: none;
+        font-style: italic;
+      }
+
+      .url a:hover {
+        text-decoration: underline;
+      }
+
+      .form {
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        max-width: 450px;
+        width: 100%;
+        box-shadow: 22px 29px 22px -10px rgba(48, 0, 0, 0.74);
+        -webkit-box-shadow: 22px 29px 22px -10px rgba(48, 0, 0, 0.74);
+        -moz-box-shadow: 22px 29px 22px -10px rgba(48, 0, 0, 0.74);
+      }
+
+      label {
+        display: block;
+        font-size: 16px;
+        margin-bottom: 8px;
+        color: #2c3e50;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #bdc3c7;
+        border-radius: 6px;
+        font-size: 16px;
+        margin-bottom: 5px;
+        transition: border-color 0.3s ease;
+      }
+
+      input[type="text"]:focus {
+        border-color: #3498db;
+        outline: none;
+      }
+
+      button {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        font-size: 16px;
+        margin-top: 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width: 100%;
+      }
+
+      button:hover {
+        background-color: #2980b9;
+      }
+
+      .Analytics-text {
+        padding: 10px;
+      }
+      .table-container {
+        flex: 1;
+        background: #fff;
+        overflow-y: auto;
+        border-radius: 10px;
+        margin-top: 10px;
+        padding: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      }
+      th,
+      td {
+      border: 1px solid black;
+      padding: 2px;
+        }
+      @media (max-width: 500px) {
+        h1 {
+          font-size: 32px;
+        }
+
+        .form {
+          padding: 20px;
+        }
+
+        .url {
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>URL Shortener</h1>
+
+      <% if (locals.id) { %>
+      <p class="url">
+        URL Generated:
+        <a href="http://localhost:8001/url/<%= id %>" target="_blank">
+          http://localhost:8001/url/<%= id %>
+        </a>
+      </p>
+      <% } %>
+
+      <div class="form">
+        <form
+          id="urlForm"
+          method="POST"
+          action="/url"
+          onsubmit="return validateForm()"
+        >
+          <label>Enter Your Original URL</label>
+          <input
+            id="urlInput"
+            type="text"
+            name="url"
+            placeholder="https://example.com"
+            required
+          />
+          <p
+            id="errorMsg"
+            style="color: red; font-size: 14px; display: none"
+          ></p>
+
+          <button type="submit">Generate</button>
+        </form>
+      </div>
+
+      <div class="table-container">
+        <% if (locals.urls) { %>
+        <h2 class="Analytics-text">Analytics</h2>
+        <table>
+          <thead>
+            <th>S. No</th>
+            <th>ShortID</th>
+            <th>Redirect URL</th>
+            <th>Clicks</th>
+          </thead>
+
+          <tbody>
+            <% urls?.forEach((url , index) => { %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td><%= url.shortId %></td>
+              <td><%= url.redirectURL %></td>
+              <td><%= url.visitHistory.length %></td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <% } %>
+      </div>
+    </div>
+
+    <script>
+      function validateForm() {
+        const urlInput = document.getElementById("urlInput");
+        const errorMsg = document.getElementById("errorMsg");
+        const url = urlInput.value.trim();
+
+        const pattern = /^(https?:\/\/)[\w\-]+(\.[\w\-]+)+[/#?]?.*$/;
+
+        if (!pattern.test(url)) {
+          errorMsg.textContent =
+            "Please enter a valid URL (must start with http:// or https://)";
+
+          errorMsg.style.display = "block";
+          return false;
+        }
+
+        errorMsg.style.display = "none";
+        return true;
+      }
+    </script>
+  </body>
+</html>
